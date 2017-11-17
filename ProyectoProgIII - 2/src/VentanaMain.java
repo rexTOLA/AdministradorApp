@@ -15,8 +15,10 @@ import java.awt.*;
 import java.io.LineNumberInputStream;
 
 public class VentanaMain extends JFrame{
-	DefaultListModel listModel = new DefaultListModel();
-	JList lista = new JList(listModel);
+	DefaultListModel listModelApp = new DefaultListModel();
+	JList listaApp = new JList(listModelApp);
+	DefaultListModel listModelRuta = new DefaultListModel();
+	JList listaRuta = new JList(listModelRuta);
 
 	public VentanaMain(){
 
@@ -32,28 +34,40 @@ public class VentanaMain extends JFrame{
 
 		//Creación de Componentes y contenedores
 		JButton bAniadirAPP = new JButton("Añadir Programa");		//Boton para añadir APP
+		JButton bEjecutarApp = new JButton("Ejecutar");				//Boton para ejecutar App
+		JButton bEliminarApp = new JButton("Eliminar");				//Boton para eliminar App
 		JButton bAniadirRuta = new JButton("Añadir Ruta");			//Boton para añadir Ruta
-		JButton bEjecutar = new JButton("Ejecutar");				//Boton para ejecutar
-		JButton bEliminar = new JButton("Eliminar");				//Boton para eliminar
+		JButton bEjecutarRuta = new JButton("Ejecutar");			//Boton para ejecutar Ruta
+		JButton bEliminarRuta = new JButton("Eliminar");			//Boton para eliminar Ruta
+		
 		JPanel pBotonera1 = new JPanel();							//Panel para el boton
 		JPanel pBotonera2 = new JPanel();
-		JPanel pLista = new JPanel(new BorderLayout());				//Panel para la lista de programas
-		pLista.setPreferredSize(new Dimension(475, 900));			//Dimensiones del panel
-		pLista.setBorder(compound);
-		JScrollPane listaScroller = new JScrollPane(lista);
+		JPanel pListaApp = new JPanel(new BorderLayout());				//Panel para la lista de programas
+		pListaApp.setPreferredSize(new Dimension(475, 425));			//Dimensiones del panel
+		pListaApp.setBorder(compound);
+		JPanel pListaRuta = new JPanel(new BorderLayout());
+		pListaRuta.setPreferredSize(new Dimension(475, 425));			//Dimensiones del panel
+		pListaRuta.setBorder(compound);
+		
+		JScrollPane listaScrollerApp = new JScrollPane(listaApp);
+		JScrollPane listaScrollerRuta = new JScrollPane(listaRuta);
 
 		//Layout
 		getContentPane().setLayout(new BorderLayout());
 
 		//Asignación de componentes y contenedores
-		getContentPane().add(pLista, BorderLayout.WEST);
+		getContentPane().add(pListaApp, BorderLayout.NORTH);
+		getContentPane().add(pListaRuta, BorderLayout.SOUTH);
 		pBotonera1.add(bAniadirAPP);
-		pBotonera1.add(bAniadirRuta);
-		pBotonera2.add(bEjecutar);
-		pBotonera2.add(bEliminar);
-		pLista.add(pBotonera1, BorderLayout.NORTH);
-		pLista.add(pBotonera2, BorderLayout.SOUTH);
-		pLista.add(listaScroller);
+		pBotonera1.add(bEjecutarApp);
+		pBotonera1.add(bEliminarApp);
+		pBotonera2.add(bAniadirRuta);
+		pBotonera2.add(bEjecutarRuta);
+		pBotonera2.add(bEliminarRuta);
+		pListaApp.add(pBotonera1, BorderLayout.NORTH);
+		pListaRuta.add(pBotonera2, BorderLayout.NORTH);
+		pListaApp.add(listaScrollerApp);
+		pListaRuta.add(listaScrollerRuta);
 
 
 		bAniadirAPP.addActionListener(new java.awt.event.ActionListener() {
@@ -68,37 +82,49 @@ public class VentanaMain extends JFrame{
 			}
 		});
 
-		bEjecutar.addActionListener(new java.awt.event.ActionListener() {
+		bEjecutarApp.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				bEjecutaractionPerformed(evt, lista);
+				bEjecutaractionPerformed(evt, listaApp);
 			}
 		});
 		
-		bEliminar.addActionListener(new java.awt.event.ActionListener() {
+		bEliminarApp.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				bEliminarActionPerformed(evt);
+				bEliminarActionPerformedApp(evt);
+			}
+		});
+		
+		bEjecutarRuta.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				bEjecutaractionPerformed(evt, listaRuta);
+			}
+		});
+		
+		bEliminarRuta.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				bEliminarActionPerformedRuta(evt);
 			}
 		});
 
 	}
 
 	private void bAniadirAPPActionPerformed(java.awt.event.ActionEvent evt){
-		VentanaAPP vr = new VentanaAPP(listModel);
+		VentanaAPP vr = new VentanaAPP(listModelApp);
 		vr.main(null);
 		vr.setVisible(true);
 		
 	}
 
 	private void bAniadirRutaActionPerformed(java.awt.event.ActionEvent evt){
-		VentanaPath vp = new VentanaPath(listModel);
+		VentanaPath vp = new VentanaPath(listModelRuta);
 		vp.main(null);
 		vp.setVisible(true);
 	}
 
-	private void bEjecutaractionPerformed(java.awt.event.ActionEvent evt, JList lista){
+	private void bEjecutaractionPerformed(java.awt.event.ActionEvent evt, JList listaApp){
 		Runtime r = Runtime.getRuntime();
 		Process p = null;
-		String ruta = ((Programa) lista.getSelectedValue()).getPath();
+		String ruta = ((Programa) listaApp.getSelectedValue()).getPath();
 		System.out.println(ruta);
 
 		try{
@@ -112,13 +138,19 @@ public class VentanaMain extends JFrame{
 
 	}
 	
-	private void bEliminarActionPerformed(java.awt.event.ActionEvent evt){
-		lista.getModel(); 
-		int index = lista.getSelectedIndex();
-		listModel.remove( index );
+	private void bEliminarActionPerformedApp(java.awt.event.ActionEvent evt){
+		listaApp.getModel(); 
+		int indexApp = listaApp.getSelectedIndex();
+		listModelApp.remove(indexApp);
 	}
 
+	private void bEliminarActionPerformedRuta(java.awt.event.ActionEvent evt){
+		listaRuta.getModel(); 
+		int indexRuta = listaRuta.getSelectedIndex();
+		listModelRuta.remove(indexRuta);
 
+	}
+	
 	public static void main(String[] args) {
 		JFrame f = new VentanaMain();
 		f.setVisible(true);
